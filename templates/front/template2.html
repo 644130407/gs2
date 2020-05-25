@@ -1,0 +1,89 @@
+{% load static %}
+{% load customtag %}
+{% include 'front/header.html' %}
+<div class="container-fluid p-0">
+    {#    <div class="row" style="background: url('{% static "imgs/img14.jpg" %}')">#}
+    {#        <img src="{% static 'imgs/img14.jpg' %}" alt="" class="img-responsive img-fluid" >#}
+    {#    </div>#}
+    {% for column in articleType.column_set.all|dictsortreversed:'sort' %}
+
+{#        三行三列模板#}
+        <div style="position:relative;">
+            <div style="position: absolute; z-index: 2; width: 100%; height: 100%; color:white; justify-content: space-between" class="infolist row m-0 ">
+                {% with column.content_set.all as columnset %}
+                    {% for i in r|getRange:9 %}
+                        {% if forloop.counter0|add:1|divisibleby:3 == 3 %}
+                            <div class="row flex-row align-content-center" style="height: 33%">
+                        {% endif %}
+                        {% with forloop.counter0|add:1 as sort   %}
+                            <div class="col-md-4 row flex-row justify-content-center align-content-center p-0 m-0">{{ columnset|getContent:sort|safe }}</div>
+                        {% endwith %}
+                        {% if forloop.counter0|add:1|divisibleby:3 == 3 %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+            </div>
+            {% with column.backimg_set.all|dictsortreversed:'id'|first as backimg %}
+                <img src="{% static backimg.url %}" alt="" class="img-responsive img-fluid w-100">
+            {% endwith %}
+
+            {#    {% for img in column.backimg_set.all %}#}
+            {#        <img src="{% static img.url %}" alt="" class="img-responsive img-fluid" >#}
+            {#    {% endfor %}#}
+        </div>
+{#################################################}
+
+
+
+{#        左右两列模板#}
+{#        <div style="position:relative;">#}
+{#            <div style="position: absolute; z-index: 2; width: 100%; height: 100%; color:white; justify-content: space-between"#}
+{#                 class="infolist row m-0 flex-column">#}
+{#                <div class="row flex-row align-content-center" style="height: 100%">#}
+{#                    <div class="col-md-6 row flex-row justify-content-center">#}
+{#                        {{ column.content_set.all|getContent:1 }}#}
+{#                    </div>#}
+{#                    <div class="col-md-6 row flex-row justify-content-center">#}
+{#                        {{ column.content_set.all|getContent:2|safe }}#}
+{#                    </div>#}
+{#                </div>#}
+{##}
+{#            </div>#}
+{#            {% with column.backimg_set.all|dictsortreversed:'id'|first as backimg %}#}
+{#                <img src="{% static backimg.url %}" alt="" class="img-responsive img-fluid w-100">#}
+{#            {% endwith %}#}
+{##}
+            {#    {% for img in column.backimg_set.all %}#}
+            {#        <img src="{% static img.url %}" alt="" class="img-responsive img-fluid" >#}
+            {#    {% endfor %}#}
+{#        </div>#}
+{#        ##################################}
+
+    {% endfor %}
+    <div class="container-fluid">
+        <div class="row flex-row justify-content-center">
+            首页 | 集团介绍 | 职业教育 | k12教育 | 动态新闻 | 关于我们
+        </div>
+        <div class="row flex-row justify-content-center">
+            友情链接 百度 新浪 爱奇艺 天津反邪教官网
+        </div>
+        <div class="row flex-row justify-content-center">
+            ©版权所有 津ICP备18002749号 高盛教育集团 Design by beijing
+        </div>
+    </div>
+</div>
+</body>
+<script src="{% static 'front/jquery/jquery-3.5.1.min.js' %}"></script>
+<script src="{% static 'front/popper/popper.min.js' %}"></script>
+<script src="{% static 'front/bootstrap/js/bootstrap.min.js' %}"></script>
+{#<script>#}
+{##}
+{#    {% for column in articleType.column_set.all|dictsortreversed:'sort' %}#}
+{#        {% for content in column.content_set.all %}#}
+{#            var data = '{{ content.content|safe }}'#}
+{#            $(".infolist:eq({{ forloop.parentloop.counter0 }}) .col-md-4")[{{ content.sort|add:-1 }}].innerHTML = data#}
+{#        {% endfor %}#}
+{#    {% endfor %}#}
+{#</script>#}
+</html>

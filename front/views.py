@@ -38,4 +38,4 @@ def gs(request):
     #     contents = Content.objects.filter(column_id=column.id)
     #
     #     contents.append(Column.objects.filter(id=column.))
-    return render(request, 'front/template1.html', {'articleTypes': articleTypes, 'articleType':articleType})
+    return render(request, 'front/template2.html', {'articleTypes': articleTypes, 'articleType':articleType})
