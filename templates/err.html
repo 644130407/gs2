@@ -1,0 +1,9 @@
+        {% for content in column.content_set.all %}
+            {% if forloop.counter0|add:1|divisibleby:3 == 3 %}
+                <div class="row flex-row align-content-center" style="height: 33%">
+            {% endif %}
+                <div class="col-md-4 row flex-row justify-content-center">{{content.content}}</div>
+            {% if forloop.counter0|add:1|divisibleby:3 == 3 %}
+                </div>
+            {% endif %}
+        {% endfor %}

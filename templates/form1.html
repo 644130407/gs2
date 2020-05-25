@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{#<form action="" method="post" id="myform">#}
+{#    {% csrf_token %}#}
+{#    <p><input type="text" name="username"> <span style="color: red"> {{ userform.errors.username.0 }}</span></p>#}
+{#    <p><input type="text" name="password"> {{ userform.errors.password.0 }}</p>#}
+{#    <input type="submit" value="submit">#}
+{#    <input type="button" value="ajax_btn" id="btn">#}
+{#</form>#}
+
+<hr>
+
+<form action="" method="post" >
+    {% csrf_token %}
+    <p>{{userform.username}} <span style="color: red"> {{ userform.errors.username.0 }}</span></p>
+    <p>{{ userform.password }} {{ userform.errors.password.0 }}</p>
+    <input type="submit" value="submit">
+
+</form>
+<script src="{% static 'lib/jquery/1.9.1/jquery.min.js' %}"></script>
+<script>
+    $("#btn").click(function () {
+        $(".errtip").remove()
+        $.ajax({
+            url: '/formtest/ajaxform/',
+            method: 'post',
+            data: $("#myform").serialize(),
+            dataType: "json",
+            success: function (data) {
+                $.each(data.msg, function (index, value) {
+                    var tag = document.createElement('span')
+                    tag.className = "errtip"
+                    tag.innerHTML = value[0]
+                    $("#myform").find("input[name='"+index+"']").after(tag)
+                })
+            },
+            error: function (err) {
+                console.log(err)
+            }
+        })
+    })
+</script>
+</body>
+</html>
