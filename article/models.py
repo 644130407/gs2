@@ -12,6 +12,7 @@ class ArticleType(models.Model):
 class Column(models.Model):
     title = models.CharField(max_length=64, default='')
     sort = models.IntegerField(default=0)
+    template = models.IntegerField(default=1)
     articleType = models.ForeignKey(ArticleType, on_delete=models.CASCADE)
 class BackImg(models.Model):
     url = models.CharField(max_length=100)
@@ -20,6 +21,7 @@ class Content(models.Model):
     title = models.CharField(max_length=64, default='')
     content = models.CharField(max_length=1024, null=True)
     column = models.ForeignKey(Column, on_delete=models.CASCADE, default='')
+
     sort = models.IntegerField(default=0)
 
 

@@ -83,6 +83,16 @@ class ColumnForm(forms.Form):
             'required': '栏目名不能为空'
         }
     )
+    template = forms.IntegerField(
+        required=True,
+        widget=forms.Select(
+            attrs={'class': 'select'},
+            choices=[(1,'一行一列'), (2,'一行两列'), (3,'三行三列'),]
+        ),
+        error_messages={
+            'required': '必须选择一个选项'
+        }
+    )
     sort = forms.IntegerField(
         required=True,
         widget=forms.NumberInput(attrs={'class':'input-text'}),
@@ -114,6 +124,7 @@ class ContentForm(forms.Form):
             'max_value': '最大数值为9'
         }
     )
+
     content=forms.CharField(
         required=True,
         widget=SummernoteWidget(
