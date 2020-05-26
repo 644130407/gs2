@@ -7,7 +7,7 @@ from login.models import Users
 
 
 class ArticleType(models.Model):
-    title = models.CharField(max_length=256, unique=True)
+    title = models.CharField(max_length=256)
     sort = models.IntegerField(default=0)
 class Column(models.Model):
     title = models.CharField(max_length=64, default='')

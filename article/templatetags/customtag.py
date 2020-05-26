@@ -17,3 +17,7 @@ def getContent(dict, sort):
 @register.filter
 def getRange(res,num):
     return range(num)
+
+@register.filter()
+def to_int(value):
+    return int(value)

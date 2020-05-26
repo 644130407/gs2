@@ -6,7 +6,8 @@ from article.models import ArticleType, Column, Content
 
 
 def index(request):
-    types = ArticleType.objects.all()
+    types = ArticleType.objects.all().order_by('sort')
+
     return render(request, 'front/index.html', {'articleTypes': types})
 
 def temp(request):
@@ -25,11 +26,11 @@ def gs(request):
     # articleType = ArticleType.objects.filter(id=id)[0]
     # print(articleType.column_set.all())
 
-    articleTypes = ArticleType.objects.all()
+    articleTypes = ArticleType.objects.all().order_by('sort')
 
     articleType = ArticleType.objects.filter(id=id)[0]
-
-    # type = ArticleType.objects.filter(id=id)[0]
+    if articleType.title == "首页":
+        return render(request, 'front/index.html', {'articleTypes': articleTypes, 'articleType': articleType})    # type = ArticleType.objects.filter(id=id)[0]
 
     # column = Column.objects.filter(id=22)[0]
     # res = Column.objects.select_related()

@@ -221,11 +221,10 @@ def contentadd(request):
     if request.method == 'GET':
         columnId = request.GET.get('columnId', None)
         print(columnId)
-        contentForm = ContentForm(articleTypeId=request.GET.get('articleTypeId', None))
-        contentForm.initial = {
-            'column': columnId
-        }
-        return render(request, 'content-add.html', {'contentForm': contentForm, 'articleTypeId':request.GET.get('articleTypeId', None)})
+        contentForm = ContentForm()
+        articleType = Column.objects.filter(id=columnId)[0].articleType.id
+        columns = Column.objects.filter(articleType_id=articleType)
+        return render(request, 'content-add.html', {'contentForm': contentForm, 'columns':columns, 'columnId': columnId})
     else:
         cf = ContentForm(request.POST)
         if cf.is_valid():
@@ -250,11 +249,13 @@ def contentadd(request):
                                       articleTypeId) + '&columnId=' + str(columnId)
                               })
         else:
-            columnId = request.POST.get('articleTypeId', None)
-            contentForm = ContentForm(articleTypeId=request.GET.get('articleTypeId', None))
-            contentForm.initial = cf.cleaned_data
+
+            columnId = cf.cleaned_data.get('column', None)
+            articleType = Column.objects.filter(id=columnId)[0].articleType.id
+            columns = Column.objects.filter(articleType_id=articleType)
             # contentForm.errors = cf.errors
-            return render(request, 'content-add.html', {'contentForm': cf})
+            return render(request, 'content-add.html',
+                          {'contentForm': cf, 'columns': columns, 'columnId': columnId})
 
 
 def uploadbg(request):
@@ -346,18 +347,19 @@ def contentedit(request):
         id = request.GET.get('id', None)
         data = Content.objects.filter(id=id)[0]
         # data['column'] = Column.objects.filter(id=data['column'])[0]
-        contentForm = ContentForm(initial=model_to_dict(data),
-                                  articleTypeId=Column.objects.get(id=data.column.id).articleType)
-        return render(request, 'content-add.html', {'contentForm': contentForm, 'id': id})
+        contentForm = ContentForm(initial=model_to_dict(data))
+        column = Content.objects.filter(id=id)[0].column
+        articleTypeId = column.articleType.id
+        columns = Column.objects.filter(articleType_id=articleTypeId)
+        return render(request, 'content-add.html',
+                      {'contentForm': contentForm, 'columns': columns, 'columnId': column.id, 'id':id})
     else:
         contentForm = ContentForm(request.POST)
         if contentForm.is_valid():
             data = contentForm.cleaned_data
-            print(data)
-            id = data['column']
-            articleTypeId = Column.objects.filter(id=id)[0].articleType.id
-
+            id = request.POST.get('column', None)
             data['column'] = Column.objects.filter(id=id)[0]
+            articleTypeId = data['column'].articleType.id
             print(request.POST.get('id'))
             Content.objects.filter(id=request.POST.get('id')).update(**data)
             return render(request, 'sucess.html',
@@ -366,6 +368,14 @@ def contentedit(request):
                               'url': '/article/subcontentlist/?columnId=' + str(id) + '&articleTypeId=' + str(
                                   articleTypeId)
                           })
+        else:
+            columnId = contentForm.cleaned_data.get('column', None)
+            articleType = Column.objects.filter(id=columnId)[0].articleType.id
+            columns = Column.objects.filter(articleType_id=articleType)
+            # contentForm.errors = cf.errors
+            return render(request, 'content-add.html',
+                          {'contentForm': contentForm, 'columns': columns, 'columnId': columnId, "id":request.POST.get('id')})
+
 
 
 def contentdel(request):

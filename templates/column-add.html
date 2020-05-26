@@ -37,40 +37,40 @@
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择项目：</label>
             <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
-            {{ columnForm.articleType }}
+            {{ columnForm.articleType }} <span class="font-weight-bold c-red">{{ columnForm.errors.articleType.0}}</span>
 				</span></div>
         </div>
 
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>栏目名称：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                {{ columnForm.title }}
+                {{ columnForm.title }} <span class="font-weight-bold c-red">{{ columnForm.errors.title.0}}</span>
             </div>
         </div>
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>栏目排序值：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                {{ columnForm.sort }}
+                {{ columnForm.sort }} <span class="font-weight-bold c-red">{{ columnForm.errors.sort.0 }}</span>
             </div>
         </div>
 
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否显示标题：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                {{ columnForm.istitle }}
+                {{ columnForm.istitle }} <span class="font-weight-bold c-red">{{ columnForm.errors.istitle.0 }}</span>
             </div>
         </div>
 
         <div class="row cl">
             <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>栏目宽度：</label>
             <div class="formControls col-xs-8 col-sm-9">
-                {{ columnForm.isfluid }}
+                {{ columnForm.isfluid }} <span class="font-weight-bold c-red">{{ columnForm.errors.isfluid.0 }}</span>
             </div>
         </div>
         <div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择模板：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-                {{ columnForm.template }}
+                {{ columnForm.template }} <span class="font-weight-bold c-red">{{ columnForm.errors.template.0 }}</span>
 			</div>
 		</div>
         <div class="row cl">

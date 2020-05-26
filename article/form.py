@@ -91,6 +91,7 @@ class ColumnForm(forms.Form):
             attrs={'class': 'select'},
             choices=[(1,'一行一列'), (2,'一行两列'), (3,'三行三列'),]
         ),
+
         error_messages={
             'required': '必须选择一个选项'
         }
@@ -103,7 +104,8 @@ class ColumnForm(forms.Form):
         ),
         error_messages={
             'required': '必须选择一个选项'
-        }
+        },
+        initial = [1,],
     )
     istitle= forms.IntegerField(
         required=True,
@@ -113,7 +115,8 @@ class ColumnForm(forms.Form):
         ),
         error_messages={
             'required': '必须选择一个选项'
-        }
+        },
+        initial=[1,]
     )
     sort = forms.IntegerField(
         required=True,
@@ -164,15 +167,15 @@ class ContentForm(forms.Form):
             'required': '必须选择一个选项'
         }
     )
-    def __init__(self,*args, **kwargs):
-        self.articleTypeId = kwargs.pop('articleTypeId', None)
-        super(ContentForm, self).__init__(*args, **kwargs)
-        qs = Column.objects.filter(articleType_id=self.articleTypeId).values_list('id',strip_tags( 'title'))
-        qs2 = []
-        for item in qs:
-            qs2.append((item[0], strip_tags(item[1])))
-        # print(qs2)
-        self.fields['column'].widget.choices = qs2
+    # def __init__(self,*args, **kwargs):
+    #     self.articleTypeId = kwargs.pop('articleTypeId', None)
+    #     super(ContentForm, self).__init__(*args, **kwargs)
+    #     qs = Column.objects.filter(articleType_id=self.articleTypeId).values_list('id',strip_tags( 'title'))
+    #     qs2 = []
+    #     for item in qs:
+    #         qs2.append((item[0], strip_tags(item[1])))
+    #     # print(qs2)
+    #     self.fields['column'].widget.choices = qs2
 
 
     # content = forms.CharField(
