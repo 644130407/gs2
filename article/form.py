@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import widgets
+from django.utils.html import strip_tags
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 from article.models import ArticleType, Column
@@ -12,6 +13,7 @@ class ArticleForm(forms.Form):
         label=' 文章标题'
     )
     content = SummernoteTextFormField(
+        required=True,
         max_length=10240,
         label="文章内容"
     )
@@ -75,10 +77,10 @@ class ColumnForm(forms.Form):
             'required': '必须选择一个选项'
         }
     )
-    title = forms.CharField(
+    title = SummernoteTextFormField(
         required=True,
         max_length=64,
-        widget=forms.TextInput(attrs={'class':'input-text'}),
+        widget=forms.TextInput(attrs={'class': 'input-text'}),
         error_messages={
             'required': '栏目名不能为空'
         }
@@ -88,6 +90,26 @@ class ColumnForm(forms.Form):
         widget=forms.Select(
             attrs={'class': 'select'},
             choices=[(1,'一行一列'), (2,'一行两列'), (3,'三行三列'),]
+        ),
+        error_messages={
+            'required': '必须选择一个选项'
+        }
+    )
+    isfluid= forms.IntegerField(
+        required=True,
+        widget=forms.RadioSelect(
+            attrs={'class': 'radio'},
+            choices=[(1,'全部宽度'), (2,'两侧白边'),]
+        ),
+        error_messages={
+            'required': '必须选择一个选项'
+        }
+    )
+    istitle= forms.IntegerField(
+        required=True,
+        widget=forms.RadioSelect(
+            attrs={'class': 'radio'},
+            choices=[(1,'显示标题栏'), (2,'隐藏标题栏'),]
         ),
         error_messages={
             'required': '必须选择一个选项'
@@ -125,11 +147,13 @@ class ContentForm(forms.Form):
         }
     )
 
-    content=forms.CharField(
+    content=SummernoteTextFormField(
         required=True,
-        widget=SummernoteWidget(
-            attrs={'style': 'width:1000px'}
-        )
+        max_length=10240,
+        error_messages={
+            'required': '内容名不能为空'
+        },
+        widget=forms.TextInput(attrs={'class':'input-text'}),
     )
     column=forms.IntegerField(
         required=True,
@@ -143,8 +167,12 @@ class ContentForm(forms.Form):
     def __init__(self,*args, **kwargs):
         self.articleTypeId = kwargs.pop('articleTypeId', None)
         super(ContentForm, self).__init__(*args, **kwargs)
-        # print(Column.objects.filter(articleType_id=self.articleTypeId).values_list('id', 'title'))
-        self.fields['column'].widget.choices = Column.objects.filter(articleType_id=self.articleTypeId).values_list('id', 'title')
+        qs = Column.objects.filter(articleType_id=self.articleTypeId).values_list('id',strip_tags( 'title'))
+        qs2 = []
+        for item in qs:
+            qs2.append((item[0], strip_tags(item[1])))
+        # print(qs2)
+        self.fields['column'].widget.choices = qs2
 
 
     # content = forms.CharField(

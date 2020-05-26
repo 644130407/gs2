@@ -18,7 +18,7 @@ def articlelist(request):
 
 
 def articleadd(request):
-    if request.method== 'GET':
+    if request.method == 'GET':
         types = ArticleType.objects.all()
         return render(request, 'article-add.html', {'types': types})
     else:
@@ -51,7 +51,6 @@ def articleadd(request):
         else:
             print(af.errors)
             return HttpResponse("error")
-
 
 
 def init(request):
@@ -123,8 +122,8 @@ def typelist(request):
 def typeadd(request):
     if request.method == 'GET':
         typeForm = TypeForm()
-        btns = list(range(0,9))
-        return render(request, 'type-add.html', {'tf': typeForm, 'btns':btns})
+        btns = list(range(0, 9))
+        return render(request, 'type-add.html', {'tf': typeForm, 'btns': btns})
     else:
         typeForm = TypeForm(request.POST)
         if typeForm.is_valid():
@@ -146,6 +145,7 @@ def columnlist(request):
         return render(request, 'column-list.html', locals())
     return None
 
+
 # 栏目添加
 def columnadd(request):
     if request.method == 'GET':
@@ -163,10 +163,10 @@ def columnadd(request):
                 print('res:')
                 print(res.id)
                 return render(request, 'sucess.html',
-                          {
-                              'info': '恭喜你，栏目已经成功添加！',
-                              'url': '/article/columnlist/',
-                          })
+                              {
+                                  'info': '恭喜你，栏目已经成功添加！',
+                                  'url': '/article/columnlist/',
+                              })
             except Exception as e:
                 print(e)
                 return render(request, 'sucess.html',
@@ -196,6 +196,7 @@ def contentlist(request):
         return render(request, 'content-list.html', locals())
     return None
 
+
 def subcontentlist(request):
     if request.method == 'GET':
         articleTypeId = request.GET.get('articleTypeId')
@@ -222,31 +223,38 @@ def contentadd(request):
         print(columnId)
         contentForm = ContentForm(articleTypeId=request.GET.get('articleTypeId', None))
         contentForm.initial = {
-            'column':columnId
+            'column': columnId
         }
-        return render(request, 'content-add.html', {'contentForm': contentForm})
+        return render(request, 'content-add.html', {'contentForm': contentForm, 'articleTypeId':request.GET.get('articleTypeId', None)})
     else:
         cf = ContentForm(request.POST)
         if cf.is_valid():
             data = cf.cleaned_data
             columnId = data.get('column')
+
             data['column'] = Column.objects.filter(id=data['column'])[0]
             articleTypeId = Column.objects.filter(id=columnId)[0].articleType.id
-            print(data)
             try:
                 Content.objects.create(**data)
                 return render(request, 'sucess.html',
                               {
                                   'info': '恭喜你，内容已经成功添加！',
-                                  'url': '/article/contentlist/?articleTypeId='+str(articleTypeId)+'&columnId='+str(columnId)
+                                  'url': '/article/subcontentlist/?articleTypeId=' + str(
+                                      articleTypeId) + '&columnId=' + str(columnId)
                               })
             except Exception as e:
-                print(e)
                 return render(request, 'sucess.html',
                               {
                                   'info': '内容添加失败！',
-                                  'url': '/article/contentlist/'
+                                  'url': '/article/subcontentlist/?articleTypeId=' + str(
+                                      articleTypeId) + '&columnId=' + str(columnId)
                               })
+        else:
+            columnId = request.POST.get('articleTypeId', None)
+            contentForm = ContentForm(articleTypeId=request.GET.get('articleTypeId', None))
+            contentForm.initial = cf.cleaned_data
+            # contentForm.errors = cf.errors
+            return render(request, 'content-add.html', {'contentForm': cf})
 
 
 def uploadbg(request):
@@ -255,7 +263,7 @@ def uploadbg(request):
         if bgImgForm.is_valid():
             data = bgImgForm.cleaned_data
             file = request.FILES.get('url', None)
-            filename = str(int(time.time()))+os.path.splitext(file.name)[1]
+            filename = str(int(time.time())) + os.path.splitext(file.name)[1]
             tofile = os.path.join('static/upload/', filename)
             f = open(tofile, 'wb')
             for chunk in file:
@@ -264,7 +272,7 @@ def uploadbg(request):
             data['url'] = os.path.join('upload/', filename)
             data['column'] = Column.objects.filter(id=data['column'])[0]
             BackImg.objects.create(**data)
-            res = {'status':'ok', 'url': data['url']}
+            res = {'status': 'ok', 'url': data['url']}
             return HttpResponse(json.dumps(res))
         else:
             print(bgImgForm.errors)
@@ -279,7 +287,7 @@ def typeedit(request):
         id = request.GET.get('id', None)
         data = ArticleType.objects.filter(id=id)[0]
         typeForm = TypeForm(initial=model_to_dict(data))
-        return render(request, 'type-add.html', {'tf':typeForm, 'id':id})
+        return render(request, 'type-add.html', {'tf': typeForm, 'id': id})
     else:
         typeForm = TypeForm(request.POST)
         if typeForm.is_valid():
@@ -287,10 +295,10 @@ def typeedit(request):
             print(data)
             ArticleType.objects.filter(id=request.POST.get('id')).update(**data)
             return render(request, 'sucess.html',
-                              {
-                                  'info': '修改成功！',
-                                  'url': '/article/contentlist/'
-                              })
+                          {
+                              'info': '修改成功！',
+                              'url': '/article/contentlist/'
+                          })
 
 
 def typedel(request):
@@ -314,7 +322,7 @@ def columnedit(request):
         if columnForm.is_valid():
             data = columnForm.cleaned_data
             print(data)
-            data['articleType'] = ArticleType.objects.filter(id = data['articleType'])[0]
+            data['articleType'] = ArticleType.objects.filter(id=data['articleType'])[0]
             Column.objects.filter(id=request.POST.get('id')).update(**data)
             return render(request, 'sucess.html',
                           {
@@ -338,7 +346,8 @@ def contentedit(request):
         id = request.GET.get('id', None)
         data = Content.objects.filter(id=id)[0]
         # data['column'] = Column.objects.filter(id=data['column'])[0]
-        contentForm = ContentForm(initial=model_to_dict(data), articleTypeId=Column.objects.get(id=data.column.id).articleType)
+        contentForm = ContentForm(initial=model_to_dict(data),
+                                  articleTypeId=Column.objects.get(id=data.column.id).articleType)
         return render(request, 'content-add.html', {'contentForm': contentForm, 'id': id})
     else:
         contentForm = ContentForm(request.POST)
@@ -354,7 +363,8 @@ def contentedit(request):
             return render(request, 'sucess.html',
                           {
                               'info': '修改成功！',
-                              'url': '/article/subcontentlist/?columnId='+str(id)+'&articleTypeId='+str(articleTypeId)
+                              'url': '/article/subcontentlist/?columnId=' + str(id) + '&articleTypeId=' + str(
+                                  articleTypeId)
                           })
 
 

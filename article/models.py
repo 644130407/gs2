@@ -13,6 +13,10 @@ class Column(models.Model):
     title = models.CharField(max_length=64, default='')
     sort = models.IntegerField(default=0)
     template = models.IntegerField(default=1)
+
+    isfluid = models.IntegerField(default=1)
+    istitle = models.IntegerField(default=1)
+
     articleType = models.ForeignKey(ArticleType, on_delete=models.CASCADE)
 class BackImg(models.Model):
     url = models.CharField(max_length=100)

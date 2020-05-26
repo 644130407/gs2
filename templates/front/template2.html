@@ -6,9 +6,21 @@
     {#        <img src="{% static 'imgs/img14.jpg' %}" alt="" class="img-responsive img-fluid" >#}
     {#    </div>#}
     {% for column in articleType.column_set.all|dictsortreversed:'sort' %}
+        {% if column.istitle == 1 %}
+            <div class="mb-3">
+            {{ column.title|safe }}
+            </div>
+
+        {% endif %}
+
 {#        一列#}
         {% if column.template == 1 %}
-        <div style="position:relative;">
+            {% if column.isfluid == 1 %}
+                <div style="position:relative;" class="container-fluid" >
+                {% else %}
+                <div style="position:relative;" class="container" >
+            {% endif %}
+
             <div style="position: absolute; z-index: 2; width: 100%; height: 100%;  justify-content: space-between"
                  class="infolist row m-0 flex-column align-content-center">
                 <div id="" class="row flex-row m-0" style="width: 100%; height: 100%">
@@ -19,12 +31,14 @@
 
 
             </div>
-        </div>
+
 
             {% with column.backimg_set.all|dictsortreversed:'id'|first as backimg %}
                 <img src="{% static backimg.url %}" alt="" class="img-responsive img-fluid w-100">
             {% endwith %}
-{% endif %}
+          </div>
+        {% endif %}
+
 
 {##############################################        #}
 {#        三行三列模板#}
